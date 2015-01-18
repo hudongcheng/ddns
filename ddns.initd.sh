@@ -56,3 +56,6 @@ case "$1" in
         echo "Usage: $0 {start|stop|reload}" 1>&2
         exit 1
     ;;
+esac
+
+:
