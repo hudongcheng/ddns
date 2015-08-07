@@ -15,7 +15,10 @@ start() {
         exit 1
     else
         $PROG_PATH/$PROG 2>&1 >> /var/log/$PROG &
-        exit 0
+        $pid=`ps ax | grep -i 'ddns' | sed 's/^[0−9]{1,}.*/\1/g' | head -n 1`
+        
+        echo "$PROG started"
+        echo $pid > "$PID_PATH/$PROG.pid"
     fi
 }
 
