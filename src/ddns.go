@@ -7,7 +7,9 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"path"
+	"os/exec"
+	//"path"
+	"path/filepath"
 	"runtime"
 	"strconv"
 	"strings"
@@ -83,13 +85,24 @@ func main() {
 	}
 }
 
+func GetCurrPath() string {
+	file, _ := exec.LookPath(os.Args[0])
+	path, _ := filepath.Abs(file)
+	splitstring := strings.Split(path, "\\")
+	size := len(splitstring)
+	splitstring = strings.Split(path, splitstring[size-1])
+	ret := strings.Replace(splitstring[0], "\\", "/", size-1)
+	return ret
+}
+
 func parseConfigFile() *Config {
 	_, execDir, _, ok := runtime.Caller(0)
 	if !ok {
 		fmt.Println(execDir)
 	}
 
-	file := fmt.Sprintf("%s/../config.json", path.Dir(execDir))
+	//file := fmt.Sprintf("%s/config.json", GetCurrPath())
+	file := "/opt/ddns/config.json"
 	content, err := ioutil.ReadFile(file)
 
 	if err != nil {
