@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+        "io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -71,6 +72,15 @@ func main() {
 	config = parseConfigFile()
 	//ticker := time.NewTicker(2 * time.Second)
 	fmt.Println("ddns started.")
+        //if
+        //os.Getpid();
+        pid := fmt.Sprintf("%v", os.Getpid())
+        file, err := os.Create("/var/run/ddns.pid")
+        if err != nil {
+          panic(err)
+        }
+        io.WriteString(file, pid)
+        defer os.Remove("/var/run/ddns.pid")
 
 	for {
 		done := make(chan int)

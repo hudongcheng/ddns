@@ -1,9 +1,18 @@
-#!/bin/bash
-#
-# Provides:	 ddns_deamon
-# Default-Start: 	2 3 4 5
-# Default-Stop: 	0 1 6
-# Description: 	This file should be used to construct scripts to be placed in /etc/init.d.
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          ddns
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: DNSPod service.
+# Description:       DNSPod service.
+# chkconfig: - 85 14
+### END INIT INFO
+
+# Author: Hu Hongcheng <879799939@qq.com>
+
 
 PROG="ddns"
 PROG_PATH="/opt/ddns"
@@ -15,10 +24,18 @@ start() {
         exit 1
     else
         $PROG_PATH/$PROG 2>&1 >> /var/log/$PROG &
-        $pid=`ps ax | grep -i 'ddns' | awk '{print $1}' | head -n 1`
-        
-        echo "$PROG started"
-        echo $pid > "$PID_PATH/$PROG.pid"
+#        $pid=`ps -A | grep 'ddns' | awk '{print $1}' | head -n 1`
+#
+        echo "$PROG started!"
+#        echo $pid > "$PID_PATH/$PROG.pid"
+    fi
+}
+
+status() {
+    if [ -e "$PID_PATH/$PROG.pid" ]; then
+        echo "$PROG is currently running!" $(cat "$PID_PATH/$PROG.pid") 1>&2
+    else
+        ech "$PROG is not running!"
     fi
 }
 
@@ -55,8 +72,12 @@ case "$1" in
         start
         exit 0
     ;;
+    status)
+        status
+        exit 0
+    ;;
     **)
-        echo "Usage: $0 {start|stop|reload}" 1>&2
+        echo "Usage: $0 {start|stop|reload|status}" 1>&2
         exit 1
     ;;
 esac
